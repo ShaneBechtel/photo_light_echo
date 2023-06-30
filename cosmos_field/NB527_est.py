@@ -19,7 +19,7 @@ from IPython import embed
 
 run_full_loop = True
 
-z = 3.3
+z = 3.3 # For NB527
 filt = "J"
 
 gamma_UVB = 1.19275638e-12 * u.s ** -1  # Gamma_UVB at z = 3.3 (From 3.5 Nyx sims)
@@ -58,7 +58,8 @@ if run_full_loop:
     plt.ylabel('Distance (pMpc)')
     plt.legend()
     plt.show()
-    embed()
+
+    # np.savez('NB527_mag_dist', M1450=M1450_range, DIST=dist_vals)
 
 else:  # Testing with M1450 = -25
 
