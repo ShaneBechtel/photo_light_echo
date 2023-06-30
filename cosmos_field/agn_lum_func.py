@@ -96,6 +96,8 @@ vol_816 = vol_comov_816 * (1+z_816)**3
 f = 1 - 0.6 #0.6 = covering factor found in literature
 
 #lower limit of -25 for mag
+
+"""
 lum_func_527 = phi(-25,z_527,c_vals) #Evaluate luminosity function at -25 Mag
 agn_count_obs_527 = vol_527*lum_func_527*u.Mpc**-3 #Obstructed AGN count
 agn_count_527 = agn_count_obs_527/f #Unobstructed AGN count
@@ -108,13 +110,35 @@ lum_func_816 = phi(-25,z_816,c_vals)
 agn_count_obs_816 = vol_816*lum_func_816*u.Mpc**-3
 agn_count_816 = agn_count_obs_816/f
 
-#embed()
 
 print("In NB527 (z=3.3) we predict: " + str(round(agn_count_obs_527.value,4)) + " unobstructed AGN and " + str(round(agn_count_527.value,4)) + " AGN total")
 print("In NB718 (z=4.9) we predict: " + str(round(agn_count_obs_718.value,4)) + " unobstructed AGN and " + str(round(agn_count_718.value,4)) + " AGN total")
 print("In NB816 (z=5.7) we predict: " + str(round(agn_count_obs_816.value,4)) + " unobstructed AGN and " + str(round(agn_count_816.value,4)) + " AGN total")
+"""
 
 
+
+# Changed naming convention, may be better this way.
+lum_func_527 = phi(-25,z_527,c_vals) #Evaluate luminosity function at -25 Mag
+agn_count_527 = vol_527*lum_func_527*u.Mpc**-3 #Obstructed AGN count
+agn_count_tot_527 = agn_count_527/f #Unobstructed AGN count
+
+lum_func_718 = phi(-25,z_718,c_vals)
+agn_count_718 = vol_718*lum_func_718*u.Mpc**-3
+agn_count_tot_718 = agn_count_718/f
+
+lum_func_816 = phi(-25,z_816,c_vals)
+agn_count_816 = vol_816*lum_func_816*u.Mpc**-3
+agn_count_tot_816 = agn_count_816/f
+
+#Todo Isn't this value pointless since I need to integrate the Luminosity function over magnitude?
+"""
+print("Assuming a lower luminosity limit of -25")
+print("In NB527 (z=3.3) we predict: " + str(round(agn_count_527.value,4)) + " unobstructed AGN and " + str(round(agn_count_tot_527.value,4)) + " AGN total")
+print("In NB718 (z=4.9) we predict: " + str(round(agn_count_718.value,4)) + " unobstructed AGN and " + str(round(agn_count_tot_718.value,4)) + " AGN total")
+print("In NB816 (z=5.7) we predict: " + str(round(agn_count_816.value,4)) + " unobstructed AGN and " + str(round(agn_count_tot_816.value,4)) + " AGN total")
+
+"""
 
 
 M_faint_vals = np.arange(-30,-20,0.01)
@@ -136,20 +160,42 @@ tot_count_vals_718 = tot_count_obs_718/f
 tot_count_vals_816 = tot_count_obs_816/f
 
 
+print("Assuming a lower luminosity limit of -25")
+print("In NB527 (z=3.3) we predict: " + str(round(tot_count_obs_527[500],4)) + " unobstructed AGN and " + str(round(tot_count_vals_527[500],4)) + " AGN total")
+print("In NB718 (z=4.9) we predict: " + str(round(tot_count_obs_718[500],4)) + " unobstructed AGN and " + str(round(tot_count_vals_718[500],4)) + " AGN total")
+print("In NB816 (z=5.7) we predict: " + str(round(tot_count_obs_816[500],4)) + " unobstructed AGN and " + str(round(tot_count_vals_816[500],4)) + " AGN total")
+
+
+obs_mag_527 = np.where(np.abs(tot_count_obs_527-1.0)==np.min(np.abs(tot_count_obs_527-1)))[0][0]
+obs_mag_718 = np.where(np.abs(tot_count_obs_718-1.0)==np.min(np.abs(tot_count_obs_718-1)))[0][0]
+obs_mag_816 = np.where(np.abs(tot_count_obs_816-1.0)==np.min(np.abs(tot_count_obs_816-1)))[0][0]
+
+tot_mag_527 = np.where(np.abs(tot_count_vals_527-1.0)==np.min(np.abs(tot_count_vals_527-1)))[0][0]
+tot_mag_718 = np.where(np.abs(tot_count_vals_718-1.0)==np.min(np.abs(tot_count_vals_718-1)))[0][0]
+tot_mag_816 = np.where(np.abs(tot_count_vals_816-1.0)==np.min(np.abs(tot_count_vals_816-1)))[0][0]
+
+print('\nIn order to expect at least 1 AGN present, we require the following limiting magnitudes')
+print("For NB527 (z=3.3): " + str(round(M_faint_vals[obs_mag_527],4)) + " for unobstructed AGN and " + str(round(M_faint_vals[tot_mag_527],4)) + " for total AGN")
+print("For NB718 (z=4.9): " + str(round(M_faint_vals[obs_mag_718],4)) + " for unobstructed AGN and " + str(round(M_faint_vals[tot_mag_718],4)) + " for total AGN")
+print("For NB816 (z=5.7): " + str(round(M_faint_vals[obs_mag_816],4)) + " for unobstructed AGN and " + str(round(M_faint_vals[tot_mag_816],4)) + " for total AGN")
+
+
+
+plt.figure(figsize=(15,10))
 plt.plot(M_faint_vals,tot_count_obs_527,'r',label='NB527: Unobstructed AGN')
 plt.plot(M_faint_vals,tot_count_vals_527,'r--',label='NB527: Total AGN')
 plt.plot(M_faint_vals,tot_count_obs_718,'g',label='NB718: Unobstructed AGN')
 plt.plot(M_faint_vals,tot_count_vals_718,'g--',label='NB718: Total AGN')
 plt.plot(M_faint_vals,tot_count_obs_816,'b',label='NB816: Unobstructed AGN')
 plt.plot(M_faint_vals,tot_count_vals_816,'b--',label='NB816: Total AGN')
+plt.hlines(1,-20,-30,'k',alpha=0.3)
+plt.vlines(-25,1e-7,1e5,'k',linestyle='--',alpha=0.4,label='Limiting Mag of Muv = -25')
 plt.yscale("log")
 plt.xlim(-20,-30)
+plt.ylim(1e-6,5e3)
 plt.ylabel('AGN Count')
 plt.xlabel('M_1450')
 plt.grid()
 plt.legend()
 plt.show()
 
-
-
-embed()
